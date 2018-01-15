@@ -1,0 +1,7 @@
+{
+  "name": "@brillout/html-head",
+  "version": "0.1.0",
+  "dependencies": {
+    "@brillout/format-space": "*"
+  }
+}
