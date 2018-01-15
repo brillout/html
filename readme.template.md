@@ -1,12 +1,14 @@
-A vanilla JavaScript library to handle the outer part of `<html>` markup (`<head>`, `<style>`, `<script>`, `<!DOCTYPE html>`, etc.)
+A vanilla JavaScript library to handle the outer part of `<html>`.
+<br/>
+(Including `<head>`, `<style>`, `<script>`, `<!DOCTYPE html>`, etc.)
 
 # `@brillout/html-crust`
 
 This package handles the outer part of HTML
-by either generating HTML, or
+by either generating HTML or
 by manipulating the DOM.
 
-The outer HTML inlcude the `<head>` tag, the `<!DOCTYPE html>` tag, `<script>` tags, etc.
+With "outer HTML" we denote the `<head>` tag, the `<!DOCTYPE html>` tag, `<script>` tags, etc.
 
 Note that everything is customizable.
 You can set any arbritary head and body, and the whole HTML can be arbitrarily set as well.
