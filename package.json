@@ -1,6 +1,6 @@
 {
   "name": "@brillout/html-crust",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "main": "./HtmlCrust.js",
   "scripts": {
     "docs": "npm install && ./node_modules/.bin/mdocs",

@@ -97,6 +97,7 @@ The following example exhibit all options.
 
 const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html-crust
 
+
 {
     const pageObject = {
         title: 'Example Page',
@@ -120,9 +121,7 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
         ],
         body: '<div>Hello World</div>',
     };
-
     const html = HtmlCrust.renderToHtml(pageObject);
-
     print(html);
 }
 
@@ -135,15 +134,16 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
             '<custom-element attr-1 attr-2="1337"/>',
         ],
     };
-
     const html = HtmlCrust.renderToHtml(pageObject);
-
     print(html);
 }
 
 print(HtmlCrust.renderToHtml({headHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
+
 print(HtmlCrust.renderToHtml({bodyHtml: 'Customized body'}));
+
 print(HtmlCrust.renderToHtml({html: '<HTML>Even the entire html is customizable</HTML>'}));
+
 
 function print(str) {
     console.log(str);
