@@ -21,7 +21,8 @@ function renderToHtml(pageObject) {
 
     return (
         '<!DOCTYPE html>\n'+
-        html_html
+        html_html+
+        '\n'
     );
 
 }
