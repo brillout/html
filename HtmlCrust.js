@@ -115,9 +115,6 @@ function render_body_to_html(pageObject) {
                 delete spec.code;
             }
             assert_usage(
-                !spec.diskPath
-            );
-            assert_usage(
                 !spec.src || spec.src.startsWith('/') || spec.src.startsWith('http'),
                 spec,
                 spec.src
