@@ -133,11 +133,22 @@ function render_body_to_html(pageObject) {
     function generate_html_element(tagName, attrs, innerHTML) {
         assert_internal(attrs.constructor===Object);
         assert_tagName(tagName);
+        const options_key = '_options';
+        const options = attrs[options_key] || {};
         return (
             [
                 '<'+tagName,
                 (
                     Object.entries(attrs)
+                    .filter(([key]) => {
+                        if( key === options_key ) {
+                            return false;
+                        }
+                        if( (options.skipAttributes||[]).includes(key) ) {
+                            return false;
+                        }
+                        return true;
+                    })
                     .map(([attr_name, attr_value]) => {
                         if( ! attr_value ) {
                             return '';
