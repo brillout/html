@@ -7,7 +7,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -22,7 +22,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -37,7 +37,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -52,7 +52,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -67,7 +67,7 @@
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -75,28 +75,24 @@
 
 
 -->
-A vanilla JavaScript library to handle the outer part of `<html>`.
+# `@brillout/html-crust`
+
+A vanilla JavaScript library to generate the outer part of `<html>`.
 <br/>
 (Including `<head>`, `<style>`, `<script>`, `<!DOCTYPE html>`, etc.)
 
-# `@brillout/html-crust`
 
-This package handles the outer part of HTML
-by either generating HTML or
-by manipulating the DOM.
+With "outer part" we denote the `<head>` tag, the `<!DOCTYPE html>` tag, `<script>` tags, etc.
 
-With "outer HTML" we denote the `<head>` tag, the `<!DOCTYPE html>` tag, `<script>` tags, etc.
-
-Note that everything is customizable.
+Everything is customizable.
 You can set any arbritary head and body, and the whole HTML can be arbitrarily set as well.
 
 The following example exhibit all options.
 
 ~~~js
-// /html-crust/example.js
+// /example.js
 
 const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html-crust
-
 
 {
     const pageObject = {
@@ -119,10 +115,14 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
         styles: [
             '/static/style.css',
         ],
+        inlineStyles: [
+            'body { margin: 0 }'
+        ],
         body: '<div>Hello World</div>',
     };
-    const html = HtmlCrust.renderToHtml(pageObject);
-    print(html);
+    const html = HtmlCrust(pageObject);
+    console.log(html);
+    console.log();
 }
 
 {
@@ -134,21 +134,19 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
             '<custom-element attr-1 attr-2="1337"/>',
         ],
     };
-    const html = HtmlCrust.renderToHtml(pageObject);
-    print(html);
+    const html = HtmlCrust(pageObject);
+    console.log(html);
+    console.log();
 }
 
-print(HtmlCrust.renderToHtml({headHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
+console.log(HtmlCrust({headHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
+console.log();
 
-print(HtmlCrust.renderToHtml({bodyHtml: 'Customized body'}));
+console.log(HtmlCrust({bodyHtml: 'Customized body'}));
+console.log();
 
-print(HtmlCrust.renderToHtml({html: '<HTML>Even the entire html is customizable</HTML>'}));
-
-
-function print(str) {
-    console.log(str);
-    console.log('');
-}
+console.log(HtmlCrust({html: '<HTML>Even the entire html is customizable</HTML>'}));
+console.log();
 ~~~
 
 Running the example prints
@@ -157,11 +155,12 @@ Running the example prints
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="/static/style.css" rel="stylesheet">
     <title>Example Page</title>
     <meta name="description" content="HTML created with `@brillout/html-crust`">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta charset="utf-8">
+    <link href="/static/style.css" rel="stylesheet">
+    <style>body { margin: 0 }</style>
   </head>
   <body>
     <div>Hello World</div>
@@ -170,6 +169,7 @@ Running the example prints
     <script src="/static/es6-module.mjs" defer data-some-custom-attribute="with some custom value" type="module"></script>
   </body>
 </html>
+
 
 <!DOCTYPE html>
 <html>
@@ -181,6 +181,7 @@ Running the example prints
   </body>
 </html>
 
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -189,6 +190,7 @@ Running the example prints
   <body>
   </body>
 </html>
+
 
 <!DOCTYPE html>
 <html>
@@ -200,6 +202,7 @@ Running the example prints
     Customized body
   </body>
 </html>
+
 
 <HTML>Even the entire html is customizable</HTML>
 ~~~
@@ -213,7 +216,7 @@ Running the example prints
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -228,7 +231,7 @@ Running the example prints
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -243,7 +246,7 @@ Running the example prints
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -258,7 +261,7 @@ Running the example prints
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 
@@ -273,7 +276,7 @@ Running the example prints
 
     WARNING, READ THIS.
     This is a computed file. Do not edit.
-    Edit `/docs/readme.template.md` instead.
+    Edit `/readme.template.md` instead.
 
 
 

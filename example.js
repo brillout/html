@@ -1,5 +1,4 @@
-const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html-crust
-
+const HtmlCrust = require('.'); // npm install @brillout/html-crust
 
 {
     const pageObject = {
@@ -22,10 +21,14 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
         styles: [
             '/static/style.css',
         ],
+        inlineStyles: [
+            'body { margin: 0 }'
+        ],
         body: '<div>Hello World</div>',
     };
-    const html = HtmlCrust.renderToHtml(pageObject);
-    print(html);
+    const html = HtmlCrust(pageObject);
+    console.log(html);
+    console.log();
 }
 
 {
@@ -37,18 +40,16 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
             '<custom-element attr-1 attr-2="1337"/>',
         ],
     };
-    const html = HtmlCrust.renderToHtml(pageObject);
-    print(html);
+    const html = HtmlCrust(pageObject);
+    console.log(html);
+    console.log();
 }
 
-print(HtmlCrust.renderToHtml({headHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
+console.log(HtmlCrust({headHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
+console.log();
 
-print(HtmlCrust.renderToHtml({bodyHtml: 'Customized body'}));
+console.log(HtmlCrust({bodyHtml: 'Customized body'}));
+console.log();
 
-print(HtmlCrust.renderToHtml({html: '<HTML>Even the entire html is customizable</HTML>'}));
-
-
-function print(str) {
-    console.log(str);
-    console.log('');
-}
+console.log(HtmlCrust({html: '<HTML>Even the entire html is customizable</HTML>'}));
+console.log();

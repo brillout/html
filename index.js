@@ -1,13 +1,9 @@
-const assert = require('reassert');
-const assert_usage = assert;
-const assert_internal = assert;
+const assert_internal = require('reassert/internal');
+const assert_usage = require('reassert/usage');
 
-module.exports = {renderToDom, renderToHtml};
+module.exports = HtmlCrust;
 
-const HTML_TAB = '  ';
-
-function renderToHtml(pageObject) {
-
+function HtmlCrust(pageObject) {
     const {html} = pageObject;
 
     if( html ) {
@@ -33,6 +29,7 @@ function render_head_to_html(pageObject) {
         description,
         charset='utf-8',
         viewport='width=device-width, initial-scale=1, maximum-scale=1',
+        inlineStyles,
         styles,
         head,
         headHtml,
@@ -43,17 +40,6 @@ function render_head_to_html(pageObject) {
     }
 
     const head_tags = [];
-    if( styles ) {
-        assert_usage(styles.forEach, styles);
-        styles.forEach(href => {
-            assert_usage(
-                href && href.constructor===String && href.startsWith('/'),
-                pageObject,
-                styles
-            );
-            head_tags.push(`<link href="${href}" rel="stylesheet">`);
-        });
-    }
     if( title ) {
         head_tags.push(`<title>${title}</title>`);
     }
@@ -65,6 +51,28 @@ function render_head_to_html(pageObject) {
     }
     if( charset ) {
         head_tags.push(`<meta charset="${charset}">`);
+    }
+    if( styles ) {
+        assert_usage(styles.forEach, styles);
+        styles.forEach(href => {
+            assert_usage(
+                isUrl(href),
+                pageObject,
+                href
+            );
+            head_tags.push(`<link href="${href}" rel="stylesheet">`);
+        });
+    }
+    if( inlineStyles ) {
+        assert_usage(inlineStyles.forEach, inlineStyles);
+        inlineStyles.forEach(styleSheet => {
+            assert_usage(
+                !isUrl(styleSheet),
+                pageObject,
+                styleSheet
+            );
+            head_tags.push(`<style>${styleSheet}</style>`);
+        });
     }
     if( head ) {
         if( head.constructor === String ) {
@@ -115,7 +123,7 @@ function render_body_to_html(pageObject) {
                 delete spec.code;
             }
             assert_usage(
-                !spec.src || spec.src.startsWith('/') || spec.src.startsWith('http'),
+                !spec.src || isUrl(spec.src),
                 spec,
                 spec.src
             );
@@ -184,6 +192,8 @@ function render_body_to_html(pageObject) {
 }
 
 function wrap(tag, content) {
+    const HTML_TAB = '  ';
+
     assert_internal([String, Array].includes(content.constructor));
     const content_array = content.constructor===Array ? content : [content];
     return (
@@ -204,32 +214,6 @@ function wrap(tag, content) {
     );
 }
 
-function renderToDom(pageObject) {
-    const doc = document;
-    assert(doc);
-    assert(doc.documentElement);
-    assert(doc.body);
-    assert(doc.querySelector);
-    assert(doc.createElement);
-
-    assert_usage(!pageObject.body);
-
-    {
-        const {title} = pageObject;
-        doc.title = title || '';
-    }
-
-    {
-        const {description} = pageObject;
-        const dom_el__meta_desc = (() => {
-            const el = doc.querySelector('meta[name="description"]');
-            if( el ) {
-                return el;
-            }
-            const new_el = doc.createElement('meta');
-            new_el.setAttribute('name', 'description');
-            return new_el;
-        })();
-        dom_el__meta_desc.setAttribute('content', description || '');
-    }
+function isUrl(url) {
+    return url && url.constructor===String && (url.startsWith('/') || url.startsWith('http'));
 }

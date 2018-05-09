@@ -1,17 +1,14 @@
 {
   "name": "@brillout/html-crust",
-  "version": "0.1.0",
-  "main": "./HtmlCrust.js",
+  "version": "0.2.0",
   "scripts": {
-    "docs": "npm install && ./node_modules/.bin/mdocs",
-    "prepare": "./node_modules/.bin/self-import"
+    "docs": "mdocs"
   },
   "dependencies": {
-    "reassert": "^1.0.3"
+    "reassert": "^1.1.8"
   },
   "devDependencies": {
-    "@brillout/mdocs": "^0.1.5",
-    "self-import": "^1.0.1"
+    "@brillout/mdocs": "^0.1.14"
   },
   "repository": "github:brillout/html-crust"
 }
