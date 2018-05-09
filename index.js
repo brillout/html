@@ -31,12 +31,12 @@ function render_head_to_html(pageObject) {
         viewport='width=device-width, initial-scale=1, maximum-scale=1',
         inlineStyles,
         styles,
-        head,
         headHtml,
+        headEntireHtml,
     } = pageObject;
 
-    if( headHtml ) {
-        return wrap('head', headHtml);
+    if( headEntireHtml ) {
+        return wrap('head', headEntireHtml);
     }
 
     const head_tags = [];
@@ -74,14 +74,9 @@ function render_head_to_html(pageObject) {
             head_tags.push(`<style>${styleSheet}</style>`);
         });
     }
-    if( head ) {
-        if( head.constructor === String ) {
-            head_tags.push(head);
-        } else if( head.constructor === Array ) {
-            head_tags.push(...head);
-        } else {
-            assert_usage(false);
-        }
+    if( headHtml ) {
+        assert_usage(headHtml.constructor === String);
+        head_tags.push(headHtml);
     }
 
     const html_head = (
@@ -98,16 +93,16 @@ function render_head_to_html(pageObject) {
 function render_body_to_html(pageObject) {
     const {
         scripts,
-        body,
         bodyHtml,
+        bodyEntireHtml,
     } = pageObject;
 
-    if( bodyHtml ) {
-        return wrap('body', bodyHtml);
+    if( bodyEntireHtml ) {
+        return wrap('body', bodyEntireHtml);
     }
 
     assert_usage(!scripts || scripts.forEach);
-    const body__addendum = (
+    const bodyHtml__addendum = (
         (scripts||[])
         .map(spec => {
             assert_usage(
@@ -134,7 +129,7 @@ function render_body_to_html(pageObject) {
         .join('\n')
     );
 
-    const html_body = wrap('body', [body, body__addendum]);
+    const html_body = wrap('body', [bodyHtml, bodyHtml__addendum]);
 
     return html_body;
 

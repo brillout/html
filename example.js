@@ -24,7 +24,7 @@ const HtmlCrust = require('.'); // npm install @brillout/html-crust
         inlineStyles: [
             'body { margin: 0 }'
         ],
-        body: '<div>Hello World</div>',
+        bodyHtml: '<div>Hello World</div>',
     };
     const html = HtmlCrust(pageObject);
     console.log(html);
@@ -36,19 +36,17 @@ const HtmlCrust = require('.'); // npm install @brillout/html-crust
         title: 'HTML without charset nor viewport.',
         charset: null,
         viewport: null,
-        head: [
-            '<custom-element attr-1 attr-2="1337"/>',
-        ],
+        headHtml: '<custom-element attr-1 attr-2="1337"/>',
     };
     const html = HtmlCrust(pageObject);
     console.log(html);
     console.log();
 }
 
-console.log(HtmlCrust({headHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
+console.log(HtmlCrust({headEntireHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
 console.log();
 
-console.log(HtmlCrust({bodyHtml: 'Customized body'}));
+console.log(HtmlCrust({bodyEntireHtml: 'Customized body'}));
 console.log();
 
 console.log(HtmlCrust({html: '<HTML>Even the entire html is customizable</HTML>'}));

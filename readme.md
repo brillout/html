@@ -87,7 +87,7 @@ With "outer part" we denote the `<head>` tag, the `<!DOCTYPE html>` tag, `<scrip
 Everything is customizable.
 You can set any arbritary head and body, and the whole HTML can be arbitrarily set as well.
 
-The following example exhibit all options.
+The following example exhibits all options.
 
 ~~~js
 // /example.js
@@ -118,7 +118,7 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
         inlineStyles: [
             'body { margin: 0 }'
         ],
-        body: '<div>Hello World</div>',
+        bodyHtml: '<div>Hello World</div>',
     };
     const html = HtmlCrust(pageObject);
     console.log(html);
@@ -130,19 +130,17 @@ const HtmlCrust = require('@brillout/html-crust'); // npm install @brillout/html
         title: 'HTML without charset nor viewport.',
         charset: null,
         viewport: null,
-        head: [
-            '<custom-element attr-1 attr-2="1337"/>',
-        ],
+        headHtml: '<custom-element attr-1 attr-2="1337"/>',
     };
     const html = HtmlCrust(pageObject);
     console.log(html);
     console.log();
 }
 
-console.log(HtmlCrust({headHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
+console.log(HtmlCrust({headEntireHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
 console.log();
 
-console.log(HtmlCrust({bodyHtml: 'Customized body'}));
+console.log(HtmlCrust({bodyEntireHtml: 'Customized body'}));
 console.log();
 
 console.log(HtmlCrust({html: '<HTML>Even the entire html is customizable</HTML>'}));

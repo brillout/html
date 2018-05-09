@@ -10,7 +10,7 @@ With "outer part" we denote the `<head>` tag, the `<!DOCTYPE html>` tag, `<scrip
 Everything is customizable.
 You can set any arbritary head and body, and the whole HTML can be arbitrarily set as well.
 
-The following example exhibit all options.
+The following example exhibits all options.
 
 ~~~js
 !INLINE ./example.js
