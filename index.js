@@ -31,9 +31,10 @@ function render_head_to_html(pageObject) {
         viewport='width=device-width, initial-scale=1, maximum-scale=1',
         inlineStyles,
         styles,
-        headHtml,
+        headHtmls=[],
         headEntireHtml,
     } = pageObject;
+    assert_usage(headHtmls.constructor === Array);
 
     if( headEntireHtml ) {
         return wrap('head', headEntireHtml);
@@ -74,10 +75,7 @@ function render_head_to_html(pageObject) {
             head_tags.push(`<style>${styleSheet}</style>`);
         });
     }
-    if( headHtml ) {
-        assert_usage(headHtml.constructor === String);
-        head_tags.push(headHtml);
-    }
+    head_tags.push(...headHtmls);
 
     const html_head = (
         head_tags.length === 0 ? (
@@ -93,9 +91,10 @@ function render_head_to_html(pageObject) {
 function render_body_to_html(pageObject) {
     const {
         scripts,
-        bodyHtml,
+        bodyHtmls=[],
         bodyEntireHtml,
     } = pageObject;
+    assert_usage(bodyHtmls && bodyHtmls.constructor===Array);
 
     if( bodyEntireHtml ) {
         return wrap('body', bodyEntireHtml);
@@ -129,7 +128,7 @@ function render_body_to_html(pageObject) {
         .join('\n')
     );
 
-    const html_body = wrap('body', [bodyHtml, bodyHtml__addendum]);
+    const html_body = wrap('body', [...bodyHtmls, bodyHtml__addendum]);
 
     return html_body;
 

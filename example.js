@@ -24,7 +24,7 @@ const HtmlCrust = require('.'); // npm install @brillout/html-crust
         inlineStyles: [
             'body { margin: 0 }'
         ],
-        bodyHtml: '<div>Hello World</div>',
+        bodyHtmls: ['<div>Hello World</div>'],
     };
     const html = HtmlCrust(pageObject);
     console.log(html);
@@ -36,7 +36,7 @@ const HtmlCrust = require('.'); // npm install @brillout/html-crust
         title: 'HTML without charset nor viewport.',
         charset: null,
         viewport: null,
-        headHtml: '<custom-element attr-1 attr-2="1337"/>',
+        headHtmls: ['<custom-element attr-1 attr-2="1337"/>'],
     };
     const html = HtmlCrust(pageObject);
     console.log(html);
