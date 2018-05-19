@@ -1,78 +1,37 @@
 const assert_internal = require('reassert/internal');
 const assert_usage = require('reassert/usage');
-const getUserDir = require('@brillout/get-user-dir');
 
-module.exports = HtmlCrust;
+module.exports = generateIndexHtml;
 
-let indexHtml;
+let indexHtml__default;
 
-function HtmlCrust(pageObject) {
-    const {html} = pageObject;
+function generateIndexHtml(pageObject) {
+    let indexHtml = get_index_html(pageObject);
 
-    if( html ) {
-        return html;
-    }
+    const headHtml = render_head(pageObject);
+    const bodyHtml = render_body(pageObject);
 
-    if( ! indexHtml ) {
-        indexHtml = getIndexHtml();
-    }
+    indexHtml = replace_token(indexHtml, '!HEAD', headHtml);
+    indexHtml = replace_token(indexHtml, '!BODY', bodyHtml);
 
-    const html_head = render_head_to_html(pageObject);
-    const html_body = render_body_to_html(pageObject);
-
-    if( html_head ) {
-        const HEAD_TOKEN = '!HEAD';
-        assert_token(indexHtml, HEAD_TOKEN);
-        replace_token(indexHtml, HEAD_TOKEN, html_head);
-    }
-
-    if( html_body ) {
-        const BODY_TOKEN = '!BODY';
-        assert_token(indexHtml, BODY_TOKEN);
-        replace_token(indexHtml, BODY_TOKEN, html_body);
-    }
-
-    const html_html = wrap('html', [html_head, html_body]);
-
-    return (
-        '<!DOCTYPE html>\n'+
-        html_html+
-        '\n'
-    );
-
+    return indexHtml;
 }
 
-function assert_token(indexHtml, token) {
-    const count = indexHtml.split(HEAD_TOKEN).length;
-    assert_usage(
-        count>0,
-        "Provided `index.html`:",
-        '',
-        indexHtml,
-        '',
-        "Token `"+token+"` is missing in the provided `index.html`.",
-        "Provided `index.html` is printed above."
-    );
-    assert_usage(
-        count>1,
-        "Provided `index.html`:",
-        '',
-        indexHtml,
-        '',
-        "There are "+count+" `"+token+"` tokens in the provided `index.html` but there should be only one.",
-        "Provided `index.html` is printed above."
-    );
+function get_index_html(pageObject) {
+    assert_usage(!pageObject.indexHtml || pageObject.indexHtml.constructor===String);
+
+    if( pageObject.indexHtml ) {
+        return pageObject.indexHtml;
+    }
+
+    if( ! indexHtml__default ) {
+        indexHtml__default = get_default_index_html();
+    }
+
+    return indexHtml__default;
 }
 
-function replace_token(indexHtml, token, token_content) {
-    const lines = indexHtml.split('\n');
-    const token_line = lines.find(line => line.includes(token));
-    const tab = token_line.match(/^\s*/)[0];
-    const token_content_with_tab = token_content.split('\n').map(line => tab+line).join('\n');
-    indexHtml.replace(token, token_content_with_tab);
-}
-
-function render_head_to_html(pageObject) {
+function render_head(pageObject) {
     const {
         title,
         description,
@@ -81,13 +40,8 @@ function render_head_to_html(pageObject) {
         inlineStyles,
         styles,
         headHtmls=[],
-        headEntireHtml,
     } = pageObject;
     assert_usage(headHtmls.constructor === Array);
-
-    if( headEntireHtml ) {
-        return wrap('head', headEntireHtml);
-    }
 
     const head_tags = [];
     if( title ) {
@@ -124,101 +78,99 @@ function render_head_to_html(pageObject) {
             head_tags.push(`<style>${styleSheet}</style>`);
         });
     }
+
     head_tags.push(...headHtmls);
 
-    const html_head = (
-        head_tags.length === 0 ? (
-            ''
-        ) : (
-            wrap('head', head_tags)
-        )
-    );
-
-    return html_head;
+    const headHtml = head_tags.join('\n');
+    return headHtml;
 }
 
-function render_body_to_html(pageObject) {
+function render_body(pageObject) {
     const {
-        scripts,
+        scripts=[],
         bodyHtmls=[],
-        bodyEntireHtml,
     } = pageObject;
     assert_usage(bodyHtmls && bodyHtmls.constructor===Array);
+    assert_usage(scripts && scripts.constructor===Array);
 
-    if( bodyEntireHtml ) {
-        return wrap('body', bodyEntireHtml);
+    const scriptHtmls = scripts.map(scriptSpec => generate_script_html(scriptSpec, pageObject));
+
+    const bodyHtml = [...bodyHtmls, ...scriptHtmls].join('\n');
+    return bodyHtml;
+}
+
+function generate_script_html(scriptSpec, pageObject) {
+    assert_scriptSpec(scriptSpec, pageObject);
+
+    if( scriptSpec.constructor === String ) {
+        scriptSpec = {src: scriptSpec};
     }
 
-    assert_usage(!scripts || scripts.forEach);
-    const bodyHtml__addendum = (
-        (scripts||[])
-        .map(spec => {
-            assert_usage(
-                spec
-            );
-            if( spec.constructor === String ) {
-                spec = {src: spec};
-            }
-            assert_usage(spec.constructor===Object, spec);
-            let innerHTML;
-            if( spec.code ) {
-                innerHTML = spec.code;
-                delete spec.code;
-            }
-            assert_usage(
-                !spec.src || isUrl(spec.src),
-                spec,
-                spec.src
-            );
-            spec.type = spec.type || 'text/javascript';
-            assert_usage(spec.src || spec.innerHTML);
-            return generate_html_element('script', spec, innerHTML);
-        })
-        .join('\n')
+    const tagSpec = {...scriptSpec};
+
+    tagSpec.type = tagSpec.type || 'text/javascript';
+
+    let innerHTML;
+    if( tagSpec.sourceCode ) {
+        innerHTML = tagSpec.sourceCode;
+        delete tagSpec.sourceCode;
+    }
+
+    return generate_tag_html('script', scriptSpec, innerHTML, pageObject);
+}
+
+function assert_scriptSpec(scriptSpec, pageObject) {
+    assert_usage(
+        scriptSpec && [String, Object].includes(scriptSpec.constructor),
+        pageObject,
+        scriptSpec
     );
+    assert_usage(
+        scriptSpec.constructor===String || !scriptSpec.src || isUrl(scriptSpec.src),
+        pageObject,
+        scriptSpec,
+        scriptSpec.src
+    );
+    assert_usage(scriptSpec.constructor===String || scriptSpec.src || scriptSpec.sourceCode);
+}
 
-    const html_body = wrap('body', [...bodyHtmls, bodyHtml__addendum]);
-
-    return html_body;
-
-    function generate_html_element(tagName, attrs, innerHTML) {
-        assert_internal(attrs.constructor===Object);
-        assert_tagName(tagName);
-        const options_key = '_options';
-        const options = attrs[options_key] || {};
-        return (
-            [
-                '<'+tagName,
-                (
-                    Object.entries(attrs)
-                    .filter(([key]) => {
-                        if( key === options_key ) {
-                            return false;
-                        }
-                        if( (options.skipAttributes||[]).includes(key) ) {
-                            return false;
-                        }
-                        return true;
-                    })
-                    .map(([attr_name, attr_value]) => {
-                        if( ! attr_value ) {
-                            return '';
-                        }
-                        if( attr_value===true ) {
-                            return ' '+attr_name;
-                        }
-                        assert_attr_name(attr_name);
-                        assert_attr_value(attr_value);
-                        return ' '+attr_name+'="'+attr_value+'"';
-                    })
-                    .join('')
-                ),
-                '>',
-                innerHTML||'',
-                '</'+tagName+'>',
-            ].join('')
-        )
-    }
+function generate_tag_html(tagName, attrs, innerHTML, pageObject) {
+    assert_internal(attrs.constructor===Object);
+    assert_tagName(tagName);
+    const options_key = '_options';
+    const options = attrs[options_key] || {};
+    return (
+        [
+            '<'+tagName,
+            (
+                Object.entries(attrs)
+                .filter(([key]) => {
+                    if( key === options_key ) {
+                        return false;
+                    }
+                    if( (options.skipAttributes||[]).includes(key) ) {
+                        return false;
+                    }
+                    return true;
+                })
+                .map(([attr_name, attr_value]) => {
+                    if( ! attr_value ) {
+                        return '';
+                    }
+                    if( attr_value===true ) {
+                        return ' '+attr_name;
+                    }
+                    assert_attr_name(attr_name);
+                    assert_attr_value(attr_value);
+                    return ' '+attr_name+'="'+attr_value+'"';
+                })
+                .join('')
+            ),
+            '>',
+            innerHTML||'',
+            '</'+tagName+'>',
+        ].join('')
+    )
 
     function assert_tagName(tagName) {
         assert_internal(tagName, pageObject, tagName);
@@ -234,37 +186,66 @@ function render_body_to_html(pageObject) {
     }
 }
 
-function wrap(tag, content) {
-    const HTML_TAB = '  ';
+function replace_token(indexHtml, token, token_content='') {
+    assert_internal(token_content.constructor===String);
+    assert_token(indexHtml, token, token_content);
+    let lines = indexHtml.split('\n');
 
-    assert_internal([String, Array].includes(content.constructor));
-    const content_array = content.constructor===Array ? content : [content];
-    return (
-        [
-            '<'+tag+'>',
-            ...(
-                content_array
-                .filter(Boolean)
-                .join('\n')
-                .split('\n')
-                .filter(Boolean)
-                .map(line => HTML_TAB+line)
-            ),
-            '</'+tag+'>',
-        ]
-        .filter(Boolean)
-        .join('\n')
+    lines = (
+        lines
+        .map(line => {
+            if( ! line.includes(token) ) {
+                return line;
+            }
+
+            const tab = line.match(/^\s*/)[0];
+            token_content = token_content.split('\n').map(line => (line===''?'':tab)+line).join('\n');
+
+            line = line.replace(new RegExp('^\\s*'+escapeRegExp(token)), token);
+            line = line.replace(token, token_content);
+
+            if( line==='' ) return null;
+
+            return line;
+
+        })
+        .filter(line => line!==null)
+    );
+
+    indexHtml = lines.join('\n');
+
+    return indexHtml;
+}
+
+function assert_token(indexHtml, token, token_content) {
+    const count = indexHtml.split(token).length - 1;
+    assert_usage(
+        count>0 || token_content==='',
+        "Provided `index.html`:",
+        '',
+        indexHtml,
+        '',
+        "Token `"+token+"` is missing in the provided `index.html`.",
+        "Provided `index.html` is printed above."
+    );
+    assert_usage(
+        count===1,
+        "Provided `index.html`:",
+        '',
+        indexHtml,
+        '',
+        "There are "+count+" `"+token+"` tokens in the provided `index.html` but there should be only one.",
+        "Provided `index.html` is printed above."
     );
 }
 
-function isUrl(url) {
-    return url && url.constructor===String && (url.startsWith('/') || url.startsWith('http'));
-}
-
-function getIndexHtml() {
-    const userDir = getUserDir();
+function get_default_index_html() {
+    const getUserDir = require('@brillout/get-user-dir');
+    const find_up = require('find-up');
     const path = require('path');
     const fs = require('fs');
+
+    const userDir = getUserDir();
 
     let indexHtmlPath = find_up.sync('index.html', {cwd: userDir});
 
@@ -275,4 +256,12 @@ function getIndexHtml() {
     const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
 
     return indexHtml;
+}
+
+function isUrl(url) {
+    return url && url.constructor===String && (url.startsWith('/') || url.startsWith('http'));
+}
+
+function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }

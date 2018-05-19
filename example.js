@@ -43,11 +43,13 @@ const HtmlCrust = require('.'); // npm install @brillout/html-crust
     console.log();
 }
 
+/*
 console.log(HtmlCrust({headEntireHtml: '<new-html8-head-tag>Customized head</new-html8-head-tag>'}));
 console.log();
 
 console.log(HtmlCrust({bodyEntireHtml: 'Customized body'}));
 console.log();
+*/
 
 console.log(HtmlCrust({html: '<HTML>Even the entire html is customizable</HTML>'}));
 console.log();
