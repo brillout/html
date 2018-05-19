@@ -1,6 +1,6 @@
 {
-  "name": "@brillout/html-crust",
-  "version": "0.4.0",
+  "name": "@brillout/index-html",
+  "version": "0.1.0",
   "scripts": {
     "docs": "mdocs"
   },
@@ -12,5 +12,5 @@
   "devDependencies": {
     "@brillout/mdocs": "^0.1.14"
   },
-  "repository": "github:brillout/html-crust"
+  "repository": "github:brillout/index-html"
 }

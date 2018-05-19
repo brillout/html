@@ -1,7 +1,7 @@
 const generateHtml = require('..'); // npm install @brillout/index-html
 
 console.log(generateHtml({
-    description: 'HTML created with `@brillout/html-crust`',
+    description: 'Some Description.',
     scripts: [
         '/static/bundle.js',
         {

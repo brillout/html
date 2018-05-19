@@ -1,4 +1,4 @@
-const generateHtml = require('../..'); // npm install @brillout/html-crust
+const generateHtml = require('../..'); // npm install @brillout/index-html
 
 console.log(generateHtml({
     styles: ['/static/style.css'],
