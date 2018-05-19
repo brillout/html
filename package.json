@@ -12,5 +12,8 @@
   "devDependencies": {
     "@brillout/mdocs": "^0.1.14"
   },
-  "repository": "github:brillout/index-html"
+  "repository": "github:brillout/index-html",
+  "publishConfig": {
+    "access": "public"
+  }
 }
