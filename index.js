@@ -1,11 +1,11 @@
 const assert_internal = require('reassert/internal');
 const assert_usage = require('reassert/usage');
 
-module.exports = generateIndexHtml;
+module.exports = generateHtml;
 
 let indexHtml__default;
 
-function generateIndexHtml(pageObject) {
+function generateHtml(pageObject) {
     let indexHtml = get_index_html(pageObject);
 
     const headHtml = render_head(pageObject);
@@ -35,7 +35,7 @@ function render_head(pageObject) {
     const {
         title,
         description,
-        charset='utf-8',
+        charset,
         viewport,
         inlineStyles,
         styles,
@@ -116,7 +116,7 @@ function generate_script_html(scriptSpec, pageObject) {
         delete tagSpec.sourceCode;
     }
 
-    return generate_tag_html('script', scriptSpec, innerHTML, pageObject);
+    return generate_tag_html('script', tagSpec, innerHTML, pageObject);
 }
 
 function assert_scriptSpec(scriptSpec, pageObject) {
@@ -229,7 +229,7 @@ function assert_token(indexHtml, token, token_content) {
         "Provided `index.html` is printed above."
     );
     assert_usage(
-        count===1,
+        count<=1,
         "Provided `index.html`:",
         '',
         indexHtml,
