@@ -1,7 +1,10 @@
 const assert_internal = require('reassert/internal');
 const assert_usage = require('reassert/usage');
+const getUserDir = require('@brillout/get-user-dir');
 
 module.exports = HtmlCrust;
+
+let indexHtml;
 
 function HtmlCrust(pageObject) {
     const {html} = pageObject;
@@ -10,8 +13,24 @@ function HtmlCrust(pageObject) {
         return html;
     }
 
-    const html_body = render_body_to_html(pageObject);
+    if( ! indexHtml ) {
+        indexHtml = getIndexHtml();
+    }
+
     const html_head = render_head_to_html(pageObject);
+    const html_body = render_body_to_html(pageObject);
+
+    if( html_head ) {
+        const HEAD_TOKEN = '!HEAD';
+        assert_token(indexHtml, HEAD_TOKEN);
+        replace_token(indexHtml, HEAD_TOKEN, html_head);
+    }
+
+    if( html_body ) {
+        const BODY_TOKEN = '!BODY';
+        assert_token(indexHtml, BODY_TOKEN);
+        replace_token(indexHtml, BODY_TOKEN, html_body);
+    }
 
     const html_html = wrap('html', [html_head, html_body]);
 
@@ -23,12 +42,42 @@ function HtmlCrust(pageObject) {
 
 }
 
+function assert_token(indexHtml, token) {
+    const count = indexHtml.split(HEAD_TOKEN).length;
+    assert_usage(
+        count>0,
+        "Provided `index.html`:",
+        '',
+        indexHtml,
+        '',
+        "Token `"+token+"` is missing in the provided `index.html`.",
+        "Provided `index.html` is printed above."
+    );
+    assert_usage(
+        count>1,
+        "Provided `index.html`:",
+        '',
+        indexHtml,
+        '',
+        "There are "+count+" `"+token+"` tokens in the provided `index.html` but there should be only one.",
+        "Provided `index.html` is printed above."
+    );
+}
+
+function replace_token(indexHtml, token, token_content) {
+    const lines = indexHtml.split('\n');
+    const token_line = lines.find(line => line.includes(token));
+    const tab = token_line.match(/^\s*/)[0];
+    const token_content_with_tab = token_content.split('\n').map(line => tab+line).join('\n');
+    indexHtml.replace(token, token_content_with_tab);
+}
+
 function render_head_to_html(pageObject) {
     const {
         title,
         description,
         charset='utf-8',
-        viewport='width=device-width, initial-scale=1, maximum-scale=1',
+        viewport,
         inlineStyles,
         styles,
         headHtmls=[],
@@ -210,4 +259,20 @@ function wrap(tag, content) {
 
 function isUrl(url) {
     return url && url.constructor===String && (url.startsWith('/') || url.startsWith('http'));
+}
+
+function getIndexHtml() {
+    const userDir = getUserDir();
+    const path = require('path');
+    const fs = require('fs');
+
+    let indexHtmlPath = find_up.sync('index.html', {cwd: userDir});
+
+    if( ! indexHtmlPath ) {
+        indexHtmlPath = path.join(__dirname, './index.html');
+    }
+
+    const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
+
+    return indexHtml;
 }
