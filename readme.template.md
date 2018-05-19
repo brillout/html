@@ -24,8 +24,8 @@ etc.
 ### Usage
 
 There are two ways to configure the generated HTML:
- - 
- - 
+ - By using the options of `generateHtml()`
+ - By creating an `index.html` file
 
 Example:
 
