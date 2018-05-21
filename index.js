@@ -249,6 +249,22 @@ function get_default_index_html() {
 
     let indexHtmlPath = find_up.sync('index.html', {cwd: userDir});
 
+    if( indexHtmlPath ) {
+        let packageJsonPath = find_up.sync('package.json', {cwd: userDir});
+
+        const isOutsideProject = (
+            ! packageJsonPath ||
+            ! isAncestorDirectory(
+                path.dirname(packageJsonPath),
+                path.dirname(indexHtmlPath)
+            )
+        );
+
+        if( isOutsideProject ) {
+            indexHtmlPath = null;
+        }
+    }
+
     if( ! indexHtmlPath ) {
         indexHtmlPath = path.join(__dirname, './index.html');
     }
@@ -256,6 +272,15 @@ function get_default_index_html() {
     const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
 
     return indexHtml;
+}
+
+function isAncestorDirectory(papa, child) {
+    const path = require('path');
+
+    const papaDirs = papa.split(path.sep).filter(dir => dir!=='');
+    const childDirs = child.split(path.sep).filter(dir => dir!=='');
+
+    return papaDirs.every((dir, i) => childDirs[i] === dir);
 }
 
 function isUrl(url) {
