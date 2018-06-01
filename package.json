@@ -1,11 +1,11 @@
 {
   "name": "@brillout/index-html",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "docs": "mdocs"
   },
   "dependencies": {
-    "@brillout/get-user-dir": "^0.1.2",
+    "@brillout/get-user-dir": "^0.2.1",
     "find-up": "^2.1.0",
     "reassert": "^1.1.8"
   },
