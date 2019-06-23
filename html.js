@@ -1,47 +1,73 @@
-const assert_internal = require('reassert/internal');
-const assert_usage = require('reassert/usage');
+const assert = require('@brillout/reassert');
 
-module.exports = generateHtml;
+module.exports = html;
 
-let indexHtml__default;
+let htmlOptions;
 
-function generateHtml(pageObject) {
-    let indexHtml = get_index_html(pageObject);
+function html({
+  html,
 
-    const headHtml = render_head(pageObject);
-    const bodyHtml = render_body(pageObject);
+  // head
+  title,
+  description,
+  charset,
+  viewport,
+  inlineStyles,
+  styles,
+  head=[],
 
-    indexHtml = replace_token(indexHtml, '!HEAD', headHtml);
-    indexHtml = replace_token(indexHtml, '!BODY', bodyHtml);
+  // body
+  scripts=[],
+  body=[],
 
-    return indexHtml;
+  // TODO - use this to generate meta tags upon async loaded data
+  initialProps,
+}) {
+  htmlOptions = arguments[0];
+
+  let html_all = get_html({html});
+
+  const html_head = render_head({
+    title,
+    description,
+    charset,
+    viewport,
+    inlineStyles,
+    styles,
+    head,
+  });
+
+  const html_body = render_body({
+    scripts,
+    body,
+  });
+
+  html_all = replace_token(html_all, '!HEAD', html_head);
+  html_all = replace_token(html_all, '!BODY', html_body);
+
+  return html_all;
 }
 
-function get_index_html(pageObject) {
-    assert_usage(!pageObject.indexHtml || pageObject.indexHtml.constructor===String);
+function get_html({html}) {
+    assert_usage(!html || html.constructor===String);
 
-    if( pageObject.indexHtml ) {
-        return pageObject.indexHtml;
+    if( html ) {
+      return html;
+    } else {
+      return get_index_html_file_content();
     }
-
-    if( ! indexHtml__default ) {
-        indexHtml__default = get_default_index_html();
-    }
-
-    return indexHtml__default;
 }
 
-function render_head(pageObject) {
-    const {
-        title,
-        description,
-        charset,
-        viewport,
-        inlineStyles,
-        styles,
-        headHtmls=[],
-    } = pageObject;
-    assert_usage(headHtmls.constructor === Array);
+function render_head({
+  title,
+  description,
+  charset,
+  viewport,
+  inlineStyles,
+  styles,
+  head,
+}) {
+    assert_usage(head.constructor === Array);
 
     const head_tags = [];
     if( title ) {
@@ -61,8 +87,7 @@ function render_head(pageObject) {
         styles.forEach(href => {
             assert_usage(
                 isUrl(href),
-                pageObject,
-                href
+                {href},
             );
             head_tags.push(`<link href="${href}" rel="stylesheet">`);
         });
@@ -72,35 +97,33 @@ function render_head(pageObject) {
         inlineStyles.forEach(styleSheet => {
             assert_usage(
                 !isUrl(styleSheet),
-                pageObject,
-                styleSheet
+                {styleSheet},
             );
             head_tags.push(`<style>${styleSheet}</style>`);
         });
     }
 
-    head_tags.push(...headHtmls);
+    head_tags.push(...head);
 
-    const headHtml = head_tags.join('\n');
-    return headHtml;
+    const html_head = head_tags.join('\n');
+    return html_head;
 }
 
-function render_body(pageObject) {
-    const {
-        scripts=[],
-        bodyHtmls=[],
-    } = pageObject;
-    assert_usage(bodyHtmls && bodyHtmls.constructor===Array);
+function render_body({
+  scripts,
+  body,
+}) {
+    assert_usage(body && body.constructor===Array);
     assert_usage(scripts && scripts.constructor===Array);
 
-    const scriptHtmls = scripts.map(scriptSpec => generate_script_html(scriptSpec, pageObject));
+    const scriptHtmls = scripts.map(scriptSpec => generate_script_html(scriptSpec));
 
-    const bodyHtml = [...bodyHtmls, ...scriptHtmls].join('\n');
-    return bodyHtml;
+    const html_body = [...body, ...scriptHtmls].join('\n');
+    return html_body;
 }
 
-function generate_script_html(scriptSpec, pageObject) {
-    assert_scriptSpec(scriptSpec, pageObject);
+function generate_script_html(scriptSpec) {
+    assert_scriptSpec(scriptSpec);
 
     if( scriptSpec.constructor === String ) {
         scriptSpec = {src: scriptSpec};
@@ -116,26 +139,24 @@ function generate_script_html(scriptSpec, pageObject) {
         delete tagSpec.sourceCode;
     }
 
-    return generate_tag_html('script', tagSpec, innerHTML, pageObject);
+    return generate_tag_html('script', tagSpec, innerHTML);
 }
 
-function assert_scriptSpec(scriptSpec, pageObject) {
+function assert_scriptSpec(scriptSpec) {
     assert_usage(
         scriptSpec && [String, Object].includes(scriptSpec.constructor),
-        pageObject,
         scriptSpec
     );
     assert_usage(
         scriptSpec.constructor===String || !scriptSpec.src || isUrl(scriptSpec.src),
-        pageObject,
         scriptSpec,
         scriptSpec.src
     );
     assert_usage(scriptSpec.constructor===String || scriptSpec.src || scriptSpec.sourceCode);
 }
 
-function generate_tag_html(tagName, attrs, innerHTML, pageObject) {
-    assert_internal(attrs.constructor===Object);
+function generate_tag_html(tagName, attrs, innerHTML) {
+    assert.internal(attrs.constructor===Object);
     assert_tagName(tagName);
     const options_key = '_options';
     const options = attrs[options_key] || {};
@@ -173,23 +194,23 @@ function generate_tag_html(tagName, attrs, innerHTML, pageObject) {
     )
 
     function assert_tagName(tagName) {
-        assert_internal(tagName, pageObject, tagName);
-        assert_usage(/^[a-zA-Z]+$/.test(tagName), pageObject, tagName);
+        assert.internal(tagName, {tagName});
+        assert_usage(/^[a-zA-Z]+$/.test(tagName), {tagName});
     }
     function assert_attr_name(attr_name) {
-        assert_usage(attr_name, pageObject, attr_name);
-        assert_usage(/^[a-zA-Z-]+$/.test(attr_name), pageObject, attr_name);
+        assert_usage(attr_name, {attr_name});
+        assert_usage(/^[a-zA-Z-]+$/.test(attr_name), {attr_name});
     }
     function assert_attr_value(attr_value) {
-        assert_usage(attr_value, pageObject, attr_value);
-        assert_usage(!attr_value.includes('"'), pageObject, attr_value);
+        assert_usage(attr_value, {attr_value});
+        assert_usage(!attr_value.includes('"'), {attr_value});
     }
 }
 
-function replace_token(indexHtml, token, token_content='') {
-    assert_internal(token_content.constructor===String);
-    assert_token(indexHtml, token, token_content);
-    let lines = indexHtml.split('\n');
+function replace_token(html_all, token, token_content='') {
+    assert.internal(token_content.constructor===String);
+    assert_token(html_all, token, token_content);
+    let lines = html_all.split('\n');
 
     lines = (
         lines
@@ -212,18 +233,18 @@ function replace_token(indexHtml, token, token_content='') {
         .filter(line => line!==null)
     );
 
-    indexHtml = lines.join('\n');
+    html_all = lines.join('\n');
 
-    return indexHtml;
+    return html_all;
 }
 
-function assert_token(indexHtml, token, token_content) {
-    const count = indexHtml.split(token).length - 1;
+function assert_token(html_all, token, token_content) {
+    const count = html_all.split(token).length - 1;
     assert_usage(
         count>0 || token_content==='',
         "Provided `index.html`:",
         '',
-        indexHtml,
+        html_all,
         '',
         "Token `"+token+"` is missing in the provided `index.html`.",
         "Provided `index.html` is printed above."
@@ -232,55 +253,38 @@ function assert_token(indexHtml, token, token_content) {
         count<=1,
         "Provided `index.html`:",
         '',
-        indexHtml,
+        html_all,
         '',
         "There are "+count+" `"+token+"` tokens in the provided `index.html` but there should be only one.",
         "Provided `index.html` is printed above."
     );
 }
 
-function get_default_index_html() {
-    const getUserDir = require('@brillout/get-user-dir');
-    const find_up = require('find-up');
-    const path = require('path');
-    const fs = require('fs');
-
-    const userDir = getUserDir();
-
-    let indexHtmlPath = find_up.sync('index.html', {cwd: userDir});
-
-    if( indexHtmlPath ) {
-        let packageJsonPath = find_up.sync('package.json', {cwd: userDir});
-
-        const isOutsideProject = (
-            ! packageJsonPath ||
-            ! isAncestorDirectory(
-                path.dirname(packageJsonPath),
-                path.dirname(indexHtmlPath)
-            )
-        );
-
-        if( isOutsideProject ) {
-            indexHtmlPath = null;
-        }
+let indexHtml;
+function get_index_html_file_content() {
+    if( !indexHtml ){
+      indexHtml = retrieve();
     }
-
-    if( ! indexHtmlPath ) {
-        indexHtmlPath = path.join(__dirname, './index.html');
-    }
-
-    const indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
-
+    assert.internal(indexHtml);
     return indexHtml;
-}
 
-function isAncestorDirectory(papa, child) {
-    const path = require('path');
+    function retrieve() {
+      const ProjectFiles = require('@brillout/project-files');
+      const path = require('path');
+      const fs = require('fs');
 
-    const papaDirs = papa.split(path.sep).filter(dir => dir!=='');
-    const childDirs = child.split(path.sep).filter(dir => dir!=='');
+      const projectFiles = new ProjectFiles();
+      let indexHtmlPath = projectFiles.findFile('index.html');
 
-    return papaDirs.every((dir, i) => childDirs[i] === dir);
+      if( !indexHtmlPath ){
+        indexHtmlPath = path.join(__dirname, './index.html');
+        assert.internal(indexHtmlPath);
+      }
+
+      assert.internal(indexHtmlPath && path.isAbsolute(indexHtmlPath));
+
+      return fs.readFileSync(indexHtmlPath, 'utf8');
+    }
 }
 
 function isUrl(url) {
@@ -289,4 +293,12 @@ function isUrl(url) {
 
 function escapeRegExp(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+function assert_usage(bool, ...args) {
+  assert.usage(
+    bool,
+    {htmlOptions},
+    ...args
+  );
 }

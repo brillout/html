@@ -1,6 +1,6 @@
-const generateHtml = require('..'); // npm install @brillout/index-html
+const html = require('..'); // npm install @brillout/html
 
-console.log(generateHtml({
+console.log(html({
     description: 'Some Description.',
     scripts: [
         '/static/bundle.js',
@@ -16,7 +16,7 @@ console.log(generateHtml({
             type: 'module'
         },
         {
-            sourceCode: "console.log('hello from `@brillout/index-html`')",
+            sourceCode: "console.log('hello from `@brillout/html`')",
         },
     ],
     styles: [
@@ -27,12 +27,12 @@ console.log(generateHtml({
     ],
     charset: 'utf-8',
     viewport: 'width=device-width',
-    bodyHtmls: ['<div>Hello World</div>'],
-    headHtmls: ['<custom-element attr-1 attr-2="1337"/>'],
-    indexHtml: (
+    body: ['<div>Hello World</div>'],
+    head: ['<custom-element attr-1 attr-2="1337"/>'],
+    html: (
 `<html>
     <head>
-        <title>Title set over indexHtml option</title>
+        <title>Title set over the \`html\` option</title>
         !HEAD
     </head>
     <body>

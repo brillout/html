@@ -1,18 +1,18 @@
 {
-  "name": "@brillout/index-html",
-  "version": "0.1.4",
+  "name": "@brillout/html",
+  "version": "0.2.0",
+  "main": "./html.js",
   "scripts": {
     "docs": "mdocs"
   },
   "dependencies": {
-    "@brillout/get-user-dir": "^0.2.1",
-    "find-up": "^2.1.0",
-    "reassert": "^1.1.8"
+    "@brillout/project-files": "^0.2.0",
+    "@brillout/reassert": "^0.1.1"
   },
   "devDependencies": {
     "@brillout/mdocs": "^0.1.14"
   },
-  "repository": "github:brillout/index-html",
+  "repository": "github:brillout/html",
   "publishConfig": {
     "access": "public"
   }

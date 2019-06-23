@@ -1,7 +1,7 @@
-const generateHtml = require('../..'); // npm install @brillout/index-html
+const html = require('../..'); // npm install @brillout/html
 
-console.log(generateHtml({
+console.log(html({
     styles: ['/static/style.css'],
     scripts: ['/static/bundle.js'],
-    bodyHtmls: ['<h1>Welcome</h1>'],
+    body: ['<h1>Welcome</h1>'],
 }));
