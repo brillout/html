@@ -2,6 +2,7 @@ const html = require('..'); // npm install @brillout/html
 
 console.log(html({
     description: 'Some Description.',
+    favicon: '/static/some-logo.png',
     scripts: [
         '/static/bundle.js',
         {

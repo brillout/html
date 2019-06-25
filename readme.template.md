@@ -112,6 +112,7 @@ Result:
 <html>
     <head>
         <title>Title set over the `html` option</title>
+        <link ref="icon" href="/static/some-logo.png" />
         <meta name="description" content="Some Description.">
         <meta name="viewport" content="width=device-width">
         <meta charset="utf-8">

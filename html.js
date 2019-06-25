@@ -10,6 +10,7 @@ function html({
   // head
   title,
   description,
+  favicon,
   charset,
   viewport,
   inlineStyles,
@@ -30,6 +31,7 @@ function html({
   const html_head = render_head({
     title,
     description,
+    favicon,
     charset,
     viewport,
     inlineStyles,
@@ -61,6 +63,7 @@ function get_html({html}) {
 function render_head({
   title,
   description,
+  favicon,
   charset,
   viewport,
   inlineStyles,
@@ -72,6 +75,9 @@ function render_head({
     const head_tags = [];
     if( title ) {
         head_tags.push(`<title>${title}</title>`);
+    }
+    if( favicon ) {
+        head_tags.push(`<link rel="shortcut icon" href="${favicon}" />`);
     }
     if( description ) {
         head_tags.push(`<meta name="description" content="${description}">`);
