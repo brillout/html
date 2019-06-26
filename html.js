@@ -2,29 +2,24 @@ const assert = require('@brillout/reassert');
 
 module.exports = html;
 
-let htmlOptions;
+function html(){
+  const {
+    html,
 
-function html({
-  html,
+    // head
+    title,
+    description,
+    favicon,
+    charset,
+    viewport,
+    inlineStyles,
+    styles,
+    head=[],
 
-  // head
-  title,
-  description,
-  favicon,
-  charset,
-  viewport,
-  inlineStyles,
-  styles,
-  head=[],
-
-  // body
-  scripts=[],
-  body=[],
-
-  // TODO - use this to generate meta tags upon async loaded data
-  initialProps,
-}) {
-  htmlOptions = arguments[0];
+    // body
+    scripts=[],
+    body=[],
+  } = evalOptions(arguments[0]);
 
   let html_all = get_html({html});
 
@@ -307,4 +302,32 @@ function assert_usage(bool, ...args) {
     {htmlOptions},
     ...args
   );
+}
+
+let htmlOptions;
+function evalOptions(htmlOptions_) {
+  htmlOptions = htmlOptions_;
+
+  const initialProps_key = 'initialProps';
+  const initialProps = htmlOptions[initialProps_key];
+
+  const opts = {};
+  for( const optName in htmlOptions ){
+    if( optName!==initialProps_key ){
+      const optValue = htmlOptions[optName];
+      opts[optName] = (
+        isFucntion(optValue) ? (
+          optValue(initialProps)
+        ) : (
+          optValue
+        )
+      );
+    }
+  }
+
+  return opts;
+}
+
+function isFucntion(thing) {
+  return thing instanceof Function || typeof thing === "function";
 }
