@@ -72,7 +72,7 @@ function render_head({
         head_tags.push(`<title>${title}</title>`);
     }
     if( favicon ) {
-        head_tags.push(`<link rel="shortcut icon" href="${favicon}" />`);
+        head_tags.push(`<link rel="shortcut icon" href="${favicon}">`);
     }
     if( description ) {
         head_tags.push(`<meta name="description" content="${description}">`);
@@ -275,7 +275,7 @@ function get_index_html_file_content() {
       const fs = require('fs');
 
       const projectFiles = new ProjectFiles();
-      let indexHtmlPath = projectFiles.findFile('index.html');
+      let indexHtmlPath = projectFiles.findConfigFile('index.html');
 
       if( !indexHtmlPath ){
         indexHtmlPath = path.join(__dirname, './index.html');

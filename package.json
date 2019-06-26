@@ -1,12 +1,12 @@
 {
   "name": "@brillout/html",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "./html.js",
   "scripts": {
     "docs": "mdocs"
   },
   "dependencies": {
-    "@brillout/project-files": "^0.2.0",
+    "@brillout/project-files": "^0.3.0",
     "@brillout/reassert": "^0.1.1"
   },
   "devDependencies": {
