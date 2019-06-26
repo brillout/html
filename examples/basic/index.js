@@ -1,4 +1,4 @@
-const html = require('..'); // npm install @brillout/html
+const html = require('../..'); // npm install @brillout/html
 
 console.log(html({
     title: 'Example Page',

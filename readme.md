@@ -112,7 +112,7 @@ There are two ways to configure the generated HTML:
 Example:
 
 ~~~js
-// ./examples/example1.js
+// ./examples/basic/index.js
 
 const html = require('@brillout/html'); // npm install @brillout/html
 
@@ -142,7 +142,7 @@ Result:
 </html>
 ~~~
 
-The default `index.html` is:
+The default base HTML document is:
 
 ~~~js
 // ./index.html
@@ -160,10 +160,10 @@ The default `index.html` is:
 </html>
 ~~~
 
-But you can as well define a custom `index.html`:
+But you can as well define a custom base HTML document `index.html`:
 
 ~~~js
-// ./examples/example2/index.js
+// ./examples/custom-base/index.js
 
 const html = require('@brillout/html'); // npm install @brillout/html
 
@@ -175,7 +175,7 @@ console.log(html({
 ~~~
 
 ~~~html
-// ./examples/example2/index.html
+// ./examples/custom-base/index.html
 
 <!DOCTYPE html>
 <html>
@@ -223,12 +223,13 @@ See the next section "API" for an example.
 The following example exhibits all options:
 
 ~~~js
-// ./examples/example3.js
+// ./examples/full/index.js
 
 const html = require('@brillout/html'); // npm install @brillout/html
 
 console.log(html({
     description: 'Some Description.',
+    favicon: '/static/some-logo.png',
     scripts: [
         '/static/bundle.js',
         {
@@ -277,6 +278,7 @@ Result:
 <html>
     <head>
         <title>Title set over the `html` option</title>
+        <link ref="icon" href="/static/some-logo.png" />
         <meta name="description" content="Some Description.">
         <meta name="viewport" content="width=device-width">
         <meta charset="utf-8">

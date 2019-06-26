@@ -35,7 +35,7 @@ There are two ways to configure the generated HTML:
 Example:
 
 ~~~js
-!INLINE ./examples/example1.js
+!INLINE ./examples/basic/index.js
 ~~~
 
 Result:
@@ -55,20 +55,20 @@ Result:
 </html>
 ~~~
 
-The default `index.html` is:
+The default base HTML document is:
 
 ~~~js
 !INLINE ./index.html
 ~~~
 
-But you can as well define a custom `index.html`:
+But you can as well define a custom base HTML document `index.html`:
 
 ~~~js
-!INLINE ./examples/example2/index.js
+!INLINE ./examples/custom-base/index.js
 ~~~
 
 ~~~html
-!INLINE ./examples/example2/index.html
+!INLINE ./examples/custom-base/index.html
 ~~~
 
 Which results in:
@@ -103,7 +103,7 @@ See the next section "API" for an example.
 The following example exhibits all options:
 
 ~~~js
-!INLINE ./examples/example3.js
+!INLINE ./examples/full/index.js
 ~~~
 
 Result:
