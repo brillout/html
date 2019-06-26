@@ -61,8 +61,10 @@ Result:
 
 The default base HTML document is:
 
-~~~js
-!INLINE ./index.html
+~~~html
+<!-- ./index.html -->
+
+!INLINE ./index.html --hide-source-path
 ~~~
 
 But you can as well define a custom base HTML document.

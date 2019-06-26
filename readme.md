@@ -150,8 +150,8 @@ Result:
 
 The default base HTML document is:
 
-~~~js
-// ./index.html
+~~~html
+<!-- ./index.html -->
 
 <!DOCTYPE html>
 <html>
