@@ -4,7 +4,7 @@ const htmlOptions = {
   title: ({productName}) => 'Example - '+productName,
   description: ({productName}) => 'Product page of '+productName+'.',
 
-  // All options can be generate with a function.
+  // All options can be generated with a function.
   // E.g. `html`:
   head: ({productName}) => [
     // Facebook's Open Graph

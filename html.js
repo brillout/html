@@ -308,20 +308,13 @@ let htmlOptions;
 function evalOptions(htmlOptions_) {
   htmlOptions = htmlOptions_;
 
-  const initialProps_key = 'initialProps';
-  const initialProps = htmlOptions[initialProps_key];
+  return new Proxy({}, {get});
 
-  const opts = {};
-  for( const optName in htmlOptions ){
-    if( optName!==initialProps_key ){
-      const optValue = htmlOptions[optName];
-      opts[optName] = (
-        isFucntion(optValue) ? (
-          optValue(initialProps)
-        ) : (
-          optValue
-        )
-      );
+  function get(_, prop) {
+    if( htmlOptions[prop] && isFucntion(htmlOptions[prop]) ){
+      return htmlOptions[prop](htmlOptions.initialProps);
+    } else {
+      return htmlOptions[prop];
     }
   }
 
