@@ -270,12 +270,11 @@ function get_index_html_file_content() {
     return indexHtml;
 
     function retrieve() {
-      const ProjectFiles = require('@brillout/project-files');
       const path = require('path');
       const fs = require('fs');
+      const {findConfigFile} = require('@brillout/project-files');
 
-      const projectFiles = new ProjectFiles();
-      let indexHtmlPath = projectFiles.findConfigFile('index.html');
+      let indexHtmlPath = findConfigFile('index.html');
 
       if( !indexHtmlPath ){
         indexHtmlPath = path.join(__dirname, './index.html');
