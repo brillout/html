@@ -1,4 +1,5 @@
 const assert = require('@brillout/reassert');
+const {findConfigFile} = require('@brillout/project-files');
 
 module.exports = html;
 
@@ -272,7 +273,6 @@ function get_index_html_file_content() {
     function retrieve() {
       const path = require('path');
       const fs = require('fs');
-      const {findConfigFile} = require('@brillout/project-files');
 
       let indexHtmlPath = findConfigFile('index.html');
 
